@@ -1,0 +1,21 @@
+##Ramses Polese Xavier Dos Santos
+### Verbo GET – listar todos
+GET http://localhost:8000/cliente/ HTTP/1.1
+### Verbo GET – listar um
+GET http://localhost:8000/cliente/10 HTTP/1.1
+### Verbo POST – adicionar
+POST http://127.0.0.1:8000/cliente/ HTTP/1.1
+
+### Verbo PUT – atualiza
+PUT http://127.0.0.1:8000/cliente/2 HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":1,
+    "nome":"Ramses Polese Xavier dos Santos",
+    "cpf": "1111111",
+    "telefone":"123124123"
+}
+
+### Verbo DELETE - excluir
+DELETE http://127.0.0.1:8000/cliente/3 HTTP/1.1

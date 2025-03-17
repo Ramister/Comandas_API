@@ -1,3 +1,5 @@
+#Ramses Polese Xavier Dos Santos
+
 from dotenv import load_dotenv, find_dotenv
 import os
 # localiza o arquivo de .env
@@ -27,3 +29,8 @@ elif DB_SGDB == 'mssql': # SQL Server
     STR_DATABASE = f"mssql+pymssql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}?charset=utf8"
 else: # SQLite
     STR_DATABASE = f"sqlite:///apiDatabase.db"
+
+    # Configurações Segurança da API
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))

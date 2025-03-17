@@ -68,18 +68,26 @@ async def put_funcionario(id: int, corpo: Funcionario):
  finally:
     session.close()
 
-@router.delete("/funcionario/{id}", tags=["Funcionário"])
-async def delete_funcionario(id:int):
+@router.delete("/funcionario/{id_funcionario}", tags=["Funcionário"])
+async def delete_funcionario(id_funcionario: int):
     try:
-        session=db.Session()
-        #busca os dados atuais pelo id
-        dados=session.query(FuncionarioDB).filter(FuncionarioDB.id_funcionario==id).one()
-        session=delete(dados)
+        session = db.Session()
+
+        # Busca o funcionário pelo ID
+        funcionario = session.query(FuncionarioDB).filter(FuncionarioDB.id_funcionario == id_funcionario).first()
+
+        if not funcionario:
+            return {"erro": "Funcionário não encontrado"}, 404
+
+        # Remove o funcionário
+        session.delete(funcionario)
         session.commit()
-        return{"id":dados.id_funcionario},200
+
+        return {"mensagem": "Funcionário deletado com sucesso"}, 200
+    
     except Exception as e:
         session.rollback()
-        return {"erro":str(e)},400
+        return {"erro": str(e)}, 400
     finally:
         session.close()
         # valida o cpf e senha informado pelo usuário

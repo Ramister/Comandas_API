@@ -1,3 +1,4 @@
+#Ramses Polese Xavier Dos Santos
 import db
 from sqlalchemy import Column,VARCHAR,CHAR,Integer
 #ORM

@@ -38,55 +38,61 @@ async def get_produto(id: int):
 async def post_produto(corpo: Produto):
     try:
         session = db.Session()
-        # Cria um novo objeto ProdutoDB com os dados da requisição
+
+        # Criar um novo objeto corretamente
         dados = ProdutoDB(
             nome=corpo.nome,
-            descricao=corpo.descricao,
-            foto=corpo.foto,
+            descricao=corpo.descricao,  # Adicionado o campo descricao
             valor_unitario=corpo.valor_unitario
         )
+
         session.add(dados)
         session.commit()
+        session.refresh(dados)  # Garante que o ID gerado seja retornado corretamente
+
+        
         return {"id": dados.id_produto}, 200
+    
     except Exception as e:
         session.rollback()
         return {"erro": str(e)}, 400
     finally:
         session.close()
-
+        
 @router.put("/produto/{id}", tags=["Produto"])
 async def put_produto(id: int, corpo: Produto):
     try:
         session = db.Session()
-        # Busca o produto pelo ID
-        dados = session.query(ProdutoDB).filter(ProdutoDB.id_produto == id).one_or_none()
-        if dados is None:
-            return {"erro": "Produto não encontrado"}, 400
-        # Atualiza os dados do produto com base no corpo da requisição
+        # busca os dados atuais pelo id
+        dados = session.query(ProdutoDB).filter(ProdutoDB.id_produto == id).one()
+        # atualiza os dados com base no corpo da requisição
         dados.nome = corpo.nome
         dados.descricao = corpo.descricao
-        dados.foto = corpo.foto
         dados.valor_unitario = corpo.valor_unitario
         session.add(dados)
         session.commit()
+        
         return {"id": dados.id_produto}, 200
+        
     except Exception as e:
         session.rollback()
         return {"erro": str(e)}, 400
     finally:
         session.close()
-
+        
 @router.delete("/produto/{id}", tags=["Produto"])
 async def delete_produto(id: int):
     try:
         session = db.Session()
-        # Busca o produto pelo ID
-        dados = session.query(ProdutoDB).filter(ProdutoDB.id_produto == id).one_or_none()
-        if dados is None:
-            return {"erro": "Produto não encontrado"}, 400
-        session.delete(dados)
+        produto = session.query(ProdutoDB).filter(ProdutoDB.id_produto == id).first()
+
+        if not produto:
+            return {"erro": "Produto não encontrado"}, 404
+
+        session.delete(produto)
         session.commit()
-        return {"id": dados.id_produto}, 200
+        return {"mensagem": "Produto deletado com sucesso"}, 200
+
     except Exception as e:
         session.rollback()
         return {"erro": str(e)}, 400
